@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.forest.mapper.EmpDeptMapper">
+    <!--    <resultMap id="empMap" type="com.forest.bean.Emp">-->
+    <!--        <id column="eid" property="eid"/>-->
+    <!--        <result column="ename" property="ename"/>-->
+    <!--        <result column="age" property="age"/>-->
+    <!--        <result column="sex" property="sex"/>-->
+    <!--        <result column="did" property="dept.did"/>-->
+    <!--        <result column="dname" property="dept.dname"/>-->
+    <!--    </resultMap>-->
+
+    <resultMap id="empMap" type="com.forest.bean.Emp">
+        <id column="eid" property="eid"/>
+        <result column="ename" property="ename"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <association property="dept" javaType="com.forest.bean.Dept">
+            <id column="did" property="did"/>
+            <result column="dname" property="dname"/>
+        </association>
+    </resultMap>
+
+    <select id="getAllEmp" resultMap="empMap">
+        select e.eid, e.ename, e.age, e.sex, e.did, d.dname from emp e left join dept d on e.did = d.did
+    </select>
+
+    <resultMap id="empMapStep" type="com.forest.bean.Emp">
+        <id column="eid" property="eid"/>
+        <result column="ename" property="ename"/>
+        <result column="age" property="age"/>
+        <result column="sex" property="sex"/>
+        <association property="dept" select="com.forest.mapper.DeptMapper.getDeptByDid" column="did"/>
+    </resultMap>
+    <select id="getEmpStep" resultMap="empMapStep">
+        select eid, ename, age, sex, did from emp where eid = #{eid}
+    </select>
+
+    <resultMap id="deptMap" type="com.forest.bean.Dept">
+        <id column="did" property="did"/>
+        <result column="dname" property="dname"/>
+        <collection property="emps" ofType="com.forest.bean.Emp">
+            <id column="eid" property="eid"/>
+            <result column="ename" property="ename"/>
+            <result column="age" property="age"/>
+            <result column="sex" property="sex"/>
+        </collection>
+    </resultMap>
+
+    <select id="getDeptEmpsByDid" resultMap="deptMap">
+        select * from dept d left join emp e on d.did = e.did where d.did = #{did}
+    </select>
+
+    <select id="getEmpListByDid" resultType="com.forest.bean.Emp">
+        select eid, ename, age, sex from emp where did = #{did}
+    </select>
+
+    <select id="getOnlyDeptByDid" resultMap="deptMapStep">
+        select did, dname from dept where did = #{did}
+    </select>
+
+    <resultMap id="deptMapStep" type="com.forest.bean.Dept">
+        <id column="did" property="did"/>
+        <result column="dname" property="dname"/>
+        <collection property="emps" select="com.forest.mapper.EmpDeptMapper.getEmpListByDid" column="did"/>
+    </resultMap>
+</mapper>

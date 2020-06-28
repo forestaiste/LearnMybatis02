@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.forest.mapper.EmpSelectMapper">
+    <select id="getCount" resultType="Integer">
+        select count(eid) from emp
+    </select>
+
+    <select id="getAllEmpMap" resultType="com.forest.bean.Emp">
+        select eid, ename, age, sex from emp
+    </select>
+</mapper>
